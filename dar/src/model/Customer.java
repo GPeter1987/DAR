@@ -8,9 +8,9 @@ public class Customer {
 	private String name;
 	private CustomerStatus status;
 	private CustomerRank rank;
-	private Customer dojo;
+	private int dojoId;
 	private LocalDate birthDate;
-	private Account account;
+	private int accountId;
 	private String email;
 	private Boolean passive;
 	
@@ -18,20 +18,44 @@ public class Customer {
 					String name, 
 					CustomerStatus status, 
 					CustomerRank rank, 
-					Customer dojo, 
+					int dojoId, 
 					LocalDate birthDate, 
-					Account account,
+					int accountId,
 					String email,
 					Boolean passive) {
 		this.id = id;
 		this.name = name;
 		this.status = status;
 		this.rank = rank;
-		this.dojo = dojo;
+		this.dojoId = dojoId;
 		this.birthDate = birthDate;
-		this.account = account;
+		this.accountId = accountId;
 		this.email = email;
 		this.passive = passive;
+	}
+	
+	public Customer(String name, 
+					CustomerStatus status, 
+					CustomerRank rank, 
+					int dojoId, 
+					LocalDate birthDate, 
+					int accountId,
+					String email,
+					Boolean passive) {
+		this.id = 0; // Adatbázis autoincremetelt értékét tesszük majd ide létrehozásnál.
+		this.name = name;
+		this.status = status;
+		this.rank = rank;
+		this.dojoId = dojoId;
+		this.birthDate = birthDate;
+		this.accountId = accountId;
+		this.email = email;
+		this.passive = passive;
+	}
+	
+	// Dummy for testing
+	public Customer(int id) {
+		this.id = id;
 	}
 
 	public int getId() {
@@ -66,12 +90,12 @@ public class Customer {
 		this.rank = rank;
 	}
 
-	public Customer getDojo() {
-		return dojo;
+	public int getDojoId() {
+		return dojoId;
 	}
 
-	public void setDojo(Customer dojo) {
-		this.dojo = dojo;
+	public void setDojo(int id) {
+		this.dojoId = id;
 	}
 
 	public LocalDate getBirthDate() {
@@ -82,12 +106,12 @@ public class Customer {
 		this.birthDate = birthDate;
 	}
 
-	public Account getAccount() {
-		return account;
+	public int getAccountId() {
+		return accountId;
 	}
 
-	public void setAccount(Account account) {
-		this.account = account;
+	public void setAccount(int id) {
+		this.accountId = id;
 	}
 
 	public String getEmail() {
@@ -106,5 +130,8 @@ public class Customer {
 		this.passive = passive;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return String.valueOf(id) + ", " + name;
+	}
 }

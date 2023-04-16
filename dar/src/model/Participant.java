@@ -3,13 +3,22 @@ package model;
 public class Participant {
 	
 	private int id;
-	private Event event;
-	private Customer customer;
+	private int eventId;
+	private int customerId;
 	
-	public Participant(int id, Event event, Customer customer) {
+	public Participant(int id, 
+					   int eventId, 
+					   int customerId) {
 		this.id = id;
-		this.event = event;
-		this.customer = customer;
+		this.eventId = eventId;
+		this.customerId = customerId;
+	}
+	
+	public Participant(int eventId, 
+			   		   int customerId) {
+		this.id = 0; // Adatbázis autoincremetelt értékét tesszük majd ide létrehozásnál. 
+		this.eventId = eventId;
+		this.customerId = customerId;
 	}
 
 	public int getId() {
@@ -20,21 +29,23 @@ public class Participant {
 		this.id = id;
 	}
 
-	public Event getEvent() {
-		return event;
+	public int getEventId() {
+		return eventId;
 	}
 
-	public void setEvent(Event event) {
-		this.event = event;
+	public void setEventId(int eventId) {
+		this.eventId = eventId;
 	}
 
-	public Customer getCustomer() {
-		return customer;
+	public int getCustomerId() {
+		return customerId;
 	}
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
+	public void setCustomerId(int customerId) {
+		this.customerId = customerId;
 	}
+
+	
 	
 	
 }

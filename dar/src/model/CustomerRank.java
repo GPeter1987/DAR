@@ -11,5 +11,6 @@ public enum CustomerRank {
 	DAN2,
 	DAN3,
 	DAN4,
-	DAN5
+	DAN5,
+	NONE
 }

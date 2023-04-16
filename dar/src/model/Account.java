@@ -2,11 +2,16 @@ package model;
 
 public class Account {
 	private int id;
-	private Customer customer;
+	private int customerId;
 	
-	public Account(int id, Customer customer) {
+	public Account(int id, int customerId) {
 		this.id = id;
-		this.customer = customer;
+		this.customerId = customerId;
+	}
+	
+	public Account(int customerId) {
+		this.id = 0; // Adatbázis autoincremetelt értékét tesszük majd ide létrehozásnál.
+		this.customerId = customerId;
 	}
 
 	public int getId() {
@@ -17,12 +22,12 @@ public class Account {
 		this.id = id;
 	}
 
-	public Customer getCustomer() {
-		return customer;
+	public int getCustomerId() {
+		return customerId;
 	}
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
+	public void setCustomerId(int id) {
+		this.customerId = id;
 	}
 	
 	

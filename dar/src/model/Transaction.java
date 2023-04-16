@@ -3,18 +3,29 @@ package model;
 public class Transaction {
 	
 	private int id;
-	private Account account;
+	private int accountId;
 	private TransactionType type;
 	private Devisa devisa;
 	private double amount;
 	
 	public Transaction(int id,
-					   Account account,
+					   int accountId,
 					   TransactionType type,
 					   Devisa devisa,
 					   double amount) {
 		this.id = id;
-		this.account = account;
+		this.accountId = accountId;
+		this.type = type;
+		this.devisa = devisa;
+		this.amount = amount;
+	}
+	
+	public Transaction(int accountId,
+					   TransactionType type,
+					   Devisa devisa,
+					   double amount) {
+		this.id = 0; // Adatbázis autoincremetelt értékét tesszük majd ide létrehozásnál.
+		this.accountId = accountId;
 		this.type = type;
 		this.devisa = devisa;
 		this.amount = amount;
@@ -28,12 +39,12 @@ public class Transaction {
 		this.id = id;
 	}
 
-	public Account getAccount() {
-		return account;
+	public int getAccountId() {
+		return accountId;
 	}
 
-	public void setAccount(Account account) {
-		this.account = account;
+	public void setAccountId(int accountId) {
+		this.accountId = accountId;
 	}
 
 	public TransactionType getType() {

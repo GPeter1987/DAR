@@ -16,6 +16,15 @@ public class Price {
 		this.amount = amount;
 		this.devisa = devisa;
 	}
+	
+	public Price(String name,
+				 double amount,
+				 Devisa devisa) {
+		this.id = 0; // Adatbázis autoincremetelt értékét tesszük majd ide létrehozásnál.
+		this.name = name;
+		this.amount = amount;
+		this.devisa = devisa;
+	}
 
 	public int getId() {
 		return id;

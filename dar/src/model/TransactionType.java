@@ -1,6 +1,7 @@
 package model;
 
 public enum TransactionType {
-	FEE
+	FEE,
+	INCOME
 	
 }
