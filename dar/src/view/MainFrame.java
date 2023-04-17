@@ -9,6 +9,8 @@ import javax.swing.JMenuItem;
 
 public class MainFrame extends JFrame {
 	
+	private static final long serialVersionUID = -1164195157399312365L;
+
 	public MainFrame() {
 		super("Dojo Adminisztrációr Rendszer");
 		
@@ -18,6 +20,7 @@ public class MainFrame extends JFrame {
 		setJMenuBar(createMainMenu());
 		
 		// Table
+		add(new EventTableView(), BorderLayout.CENTER);
 		
 		setSize(600, 400);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -32,6 +35,7 @@ public class MainFrame extends JFrame {
 		JMenu customerMenu = new JMenu("Ügyfél");
 		JMenuItem newCustomer = new JMenuItem("Új ügyfél...");
 		JMenuItem modCustomer = new JMenuItem("Ügyfél módosítása...");
+		JMenuItem listCustomer = new JMenuItem("Ügyfél lista...");
 		JMenu accountMenu = new JMenu("Számlák");
 		JMenuItem listAccounts = new JMenuItem("Számlák megtekintése");
 		JMenuItem selectAccount = new JMenuItem("Számla kiválasztása...");
@@ -43,6 +47,7 @@ public class MainFrame extends JFrame {
 		menuBar.add(customerMenu);
 		customerMenu.add(newCustomer);
 		customerMenu.add(modCustomer);
+		customerMenu.add(listCustomer);
 		
 		menuBar.add(accountMenu);
 		accountMenu.add(listAccounts);

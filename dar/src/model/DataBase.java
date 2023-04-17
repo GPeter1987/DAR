@@ -24,7 +24,6 @@ public class DataBase {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(jdbc, userName, password);
-			System.out.println("Success!");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -94,6 +93,29 @@ public class DataBase {
 		return event;
 	}
 	
+	public void modifyEvent(Event event) {
+		String sql = "UPDATE event SET Name = ?, Type = ?, Date = ?, DojoID = ? WHERE ID = ?";
+		
+		try {
+			connectDB();
+			
+			PreparedStatement pstmt; 
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, event.getName());
+			pstmt.setString(2, String.valueOf(event.getType()));
+			pstmt.setString(3, String.valueOf(event.getDate()));
+			pstmt.setInt(4, event.getDojoId());
+			pstmt.setInt(5, event.getId());
+			pstmt.executeUpdate();
+			
+			disconnectDB();
+			
+			System.out.println("Event record is updated in the DB!");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public ArrayList<Event> searcAllEvent() {
 		ArrayList<Event> events = new ArrayList<Event>();
 		String sql = "SELECT * FROM event";
@@ -105,10 +127,10 @@ public class DataBase {
 			
 			while(rs.next()) {
 				Event event = new Event(rs.getInt("ID"), 
-									rs.getString("Name"), 
-									EventType.valueOf(rs.getString("Type")), 
-									rs.getDate("Date").toLocalDate(), 
-									rs.getInt("DojoID"));
+										rs.getString("Name"), 
+										EventType.valueOf(rs.getString("Type")), 
+										rs.getDate("Date").toLocalDate(), 
+										rs.getInt("DojoID"));
 				events.add(event);
 			}
 			disconnectDB();
@@ -117,6 +139,24 @@ public class DataBase {
 		} catch(SQLException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+	
+	public void deleteEvent(Event event) {
+		String sql = "DELETE FROM event WHERE ID = ?";
+		
+		try {
+			connectDB();
+			
+			PreparedStatement pstmt; 
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, event.getId());
+			pstmt.executeUpdate();
+			
+			disconnectDB();
+			System.out.println("Event with the ID:" + event.getId() + " is deleted from the DB!");
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -192,14 +232,14 @@ public class DataBase {
 			
 			while(rs.next()) {
 				Customer customer = new Customer(rs.getInt("ID"), 
-									rs.getString("Name"), 
-									CustomerStatus.valueOf(rs.getString("Status")), 
-									CustomerRank.valueOf(rs.getString("Rank")),
-									rs.getInt("DojoID"),
-									rs.getDate("BDate").toLocalDate(), 
-									rs.getInt("AccountID"),
-									rs.getString("Email"),
-									rs.getBoolean("Passive"));
+												 rs.getString("Name"), 
+												 CustomerStatus.valueOf(rs.getString("Status")), 
+												 CustomerRank.valueOf(rs.getString("Rank")),
+												 rs.getInt("DojoID"),
+												 rs.getDate("BDate").toLocalDate(), 
+												 rs.getInt("AccountID"),
+												 rs.getString("Email"),
+												 rs.getBoolean("Passive"));
 				customers.add(customer);
 			}
 			disconnectDB();
@@ -208,6 +248,33 @@ public class DataBase {
 		} catch(SQLException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+	
+	public void modifyCustomer(Customer customer) {
+		String sql = "UPDATE customer SET Name = ?, Status = ?, Rank = ?, DojoID = ?, BDate = ?, AccountID = ?, Email = ?, Passive = ? WHERE ID = ?";
+		
+		try {
+			connectDB();
+			
+			PreparedStatement pstmt; 
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, customer.getName());
+			pstmt.setString(2, String.valueOf(customer.getStatus()));
+			pstmt.setString(3, String.valueOf(customer.getRank()));
+			pstmt.setInt(4, customer.getDojoId());
+			pstmt.setString(5, String.valueOf(customer.getBirthDate()));
+			pstmt.setInt(6, customer.getAccountId());
+			pstmt.setString(7, customer.getEmail());
+			pstmt.setBoolean(8, customer.getPassive());
+			pstmt.setInt(9, customer.getId());
+			pstmt.executeUpdate();
+			
+			disconnectDB();
+			
+			System.out.println("Customer record is updated in the DB!");
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -225,6 +292,26 @@ public class DataBase {
 			disconnectDB();
 			System.out.println("Account saved!");
 		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void modifyAccount(Account acc) {
+		String sql = "UPDATE account SET CustomerID = ? WHERE ID = ?";
+		
+		try {
+			connectDB();
+			
+			PreparedStatement pstmt; 
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, acc.getCustomerId());
+			pstmt.setInt(2, acc.getId());
+			pstmt.executeUpdate();
+			
+			disconnectDB();
+			
+			System.out.println("Account record is updated in the DB!");
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -250,6 +337,139 @@ public class DataBase {
 		}
 	}
 	
+	public Transaction searchTransactionById(int id) {
+		String sql = "SELECT * FROM transaction WHERE ID = ?";
+		Transaction transaction = null;
+		
+		try {
+			connectDB();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, id);
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				transaction = new Transaction(rs.getInt("ID"), 
+											  rs.getInt("AccountID"), 
+											  TransactionType.valueOf(rs.getString("Type")), 
+											  Devisa.valueOf(rs.getString("Devisa")),
+											  rs.getDouble("Amount"),
+											  rs.getString("Comment"));
+			}
+			disconnectDB();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return transaction;
+	}
+	
+	public ArrayList<Transaction> searchTransactionsByAccId(int AccountId) {
+		String sql = "SELECT * FROM transaction WHERE AccountID = ?";
+		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+		
+		try {
+			connectDB();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, AccountId);
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				Transaction transaction = new Transaction(rs.getInt("ID"), 
+														  rs.getInt("AccountID"), 
+														  TransactionType.valueOf(rs.getString("Type")), 
+														  Devisa.valueOf(rs.getString("Devisa")),
+														  rs.getDouble("Amount"),
+														  rs.getString("Comment"));
+				
+				transactions.add(transaction);
+			}
+			disconnectDB();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return transactions;
+	}
+	
+	public ArrayList<Transaction> searchTransactionsByType(TransactionType type) {
+		String sql = "SELECT * FROM transaction WHERE Type = ?";
+		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+		
+		try {
+			connectDB();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, String.valueOf(type));
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				Transaction transaction = new Transaction(rs.getInt("ID"), 
+														  rs.getInt("AccountID"), 
+														  TransactionType.valueOf(rs.getString("Type")), 
+														  Devisa.valueOf(rs.getString("Devisa")),
+														  rs.getDouble("Amount"),
+														  rs.getString("Comment"));
+				
+				transactions.add(transaction);
+			}
+			disconnectDB();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return transactions;
+	}
+	
+	public void modifyTransaction(Transaction transaction) {
+		String sql = "UPDATE transaction SET AccountID = ?, Type = ?, Devisa = ?, Amount = ?, Comment = ? WHERE ID = ?";
+		
+		try {
+			connectDB();
+			
+			PreparedStatement pstmt; 
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, transaction.getAccountId());
+			pstmt.setString(2, String.valueOf(transaction.getType()));
+			pstmt.setString(3, String.valueOf(transaction.getDevisa()));
+			pstmt.setDouble(4, transaction.getAmount());
+			pstmt.setString(5, transaction.getComment());
+			pstmt.setInt(6, transaction.getId());
+			pstmt.executeUpdate();
+			
+			disconnectDB();
+			
+			System.out.println("Transaction record is updated in the DB!");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public ArrayList<Transaction> searcAllTransaction() {
+		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+		String sql = "SELECT * FROM transaction";
+		
+		try {
+			connectDB();
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			while(rs.next()) {
+				Transaction transaction = new Transaction(rs.getInt("ID"), 
+														  rs.getInt("AccountID"), 
+														  TransactionType.valueOf(rs.getString("Type")), 
+														  Devisa.valueOf(rs.getString("Devisa")),
+														  rs.getDouble("Amount"),
+														  rs.getString("Comment"));
+				transactions.add(transaction);
+			}
+			disconnectDB();
+			
+			return transactions;
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public void createPrice(Price price) {
 		String sql = "INSERT INTO pricetable(Name, Amount, Devisa) VALUES(?,?,?)";
 		
@@ -266,6 +486,108 @@ public class DataBase {
 			disconnectDB();
 			System.out.println("Price saved!");
 		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void modifyPrice(Price price) {
+		String sql = "UPDATE pricetable SET Name = ?, Amount = ?, Devisa = ? WHERE ID = ?";
+		
+		try {
+			connectDB();
+			
+			PreparedStatement pstmt; 
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, price.getName());
+			pstmt.setDouble(2, price.getAmount());
+			pstmt.setString(3, String.valueOf(price.getDevisa()));
+			pstmt.setInt(4, price.getId());
+			pstmt.executeUpdate();
+			
+			disconnectDB();
+			
+			System.out.println("Price record is updated in the DB!");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void deletePrice(Price price) {
+		String sql = "DELETE FROM pricetable WHERE ID = ?";
+		
+		try {
+			connectDB();
+			
+			PreparedStatement pstmt; 
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, price.getId());
+			pstmt.executeUpdate();
+			
+			disconnectDB();
+			System.out.println("Price with the ID:" + price.getId() + " is deleted from the DB!");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void createParticipant(Event event, Customer customer) {
+		String sql = "INSERT INTO participant(EventID, CustomerID) VALUES(?,?)";
+		
+		try {
+			connectDB();
+			
+			Participant participant = new Participant(event.getId(), customer.getId());
+			
+			PreparedStatement pstmt; 
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, participant.getEventId());
+			pstmt.setInt(2, participant.getCustomerId());
+			pstmt.executeUpdate();
+			
+			disconnectDB();
+			System.out.println("Participant saved!");
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public Participant searchParticipantById(int id) {
+		String sql = "SELECT * FROM transaction WHERE ID = ?";
+		Participant participant = null;
+		
+		try {
+			connectDB();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, id);
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				participant = new Participant(rs.getInt("ID"), 
+											  rs.getInt("EventID"), 
+											  rs.getInt("CustomerID"));
+			}
+			disconnectDB();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return participant;
+	}
+	
+	public void deleteParticipant(Participant participant) {
+		String sql = "DELETE FROM pricetable WHERE ID = ?";
+		
+		try {
+			connectDB();
+			
+			PreparedStatement pstmt; 
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, participant.getId());
+			pstmt.executeUpdate();
+			
+			disconnectDB();
+			System.out.println("Participant with the ID:" + participant.getId() + " is deleted from the DB!");
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}

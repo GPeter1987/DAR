@@ -7,28 +7,33 @@ public class Transaction {
 	private TransactionType type;
 	private Devisa devisa;
 	private double amount;
+	private String comment;
 	
 	public Transaction(int id,
 					   int accountId,
 					   TransactionType type,
 					   Devisa devisa,
-					   double amount) {
+					   double amount,
+					   String comment) {
 		this.id = id;
 		this.accountId = accountId;
 		this.type = type;
 		this.devisa = devisa;
 		this.amount = amount;
+		this.comment = comment;
 	}
 	
 	public Transaction(int accountId,
 					   TransactionType type,
 					   Devisa devisa,
-					   double amount) {
+					   double amount,
+					   String comment) {
 		this.id = 0; // Adatbázis autoincremetelt értékét tesszük majd ide létrehozásnál.
 		this.accountId = accountId;
 		this.type = type;
 		this.devisa = devisa;
 		this.amount = amount;
+		this.comment = comment;
 	}
 
 	public int getId() {
@@ -71,5 +76,17 @@ public class Transaction {
 		this.amount = amount;
 	}
 	
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	@Override
+	public String toString() {
+		return String.valueOf(id) + ", " + String.valueOf(type) + ", " + String.valueOf(amount) + " " + String.valueOf(devisa);
+	}
 	
 }
