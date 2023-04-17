@@ -93,6 +93,31 @@ public class DataBase {
 		return event;
 	}
 	
+	public Event searchEventByName(String name) {
+		String sql = "SELECT * FROM event WHERE Name = ?";
+		Event event = null;
+		
+		try {
+			connectDB();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, name);
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				event = new Event(rs.getInt("ID"), 
+								  rs.getString("Name"), 
+								  EventType.valueOf(rs.getString("Type")), 
+								  rs.getDate("Date").toLocalDate(), 
+								  rs.getInt("DojoID"));
+			}
+			disconnectDB();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return event;
+	}
+	
 	public void modifyEvent(Event event) {
 		String sql = "UPDATE event SET Name = ?, Type = ?, Date = ?, DojoID = ? WHERE ID = ?";
 		
@@ -552,7 +577,7 @@ public class DataBase {
 	}
 
 	public Participant searchParticipantById(int id) {
-		String sql = "SELECT * FROM transaction WHERE ID = ?";
+		String sql = "SELECT * FROM participant WHERE ID = ?";
 		Participant participant = null;
 		
 		try {
@@ -572,6 +597,54 @@ public class DataBase {
 		}
 		
 		return participant;
+	}
+	
+	public ArrayList<Participant> searchParticipantByEventId(int id) {
+		String sql = "SELECT * FROM participant WHERE EventID = ?";
+		ArrayList<Participant> participants = new ArrayList<>();
+		
+		try {
+			connectDB();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, id);
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				Participant participant = new Participant(rs.getInt("ID"), 
+														  rs.getInt("EventID"), 
+														  rs.getInt("CustomerID"));
+				participants.add(participant);
+			}
+			disconnectDB();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return participants;
+	}
+	
+	public ArrayList<Participant> searchParticipantByCustId(int id) {
+		String sql = "SELECT * FROM participant WHERE CustomerID = ?";
+		ArrayList<Participant> participants = new ArrayList<>();
+		
+		try {
+			connectDB();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, id);
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				Participant participant = new Participant(rs.getInt("ID"), 
+														  rs.getInt("EventID"), 
+														  rs.getInt("CustomerID"));
+				participants.add(participant);
+			}
+			disconnectDB();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return participants;
 	}
 	
 	public void deleteParticipant(Participant participant) {

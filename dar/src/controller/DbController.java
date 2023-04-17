@@ -28,6 +28,10 @@ public class DbController {
 		return db.searchEventById(id);
 	}
 	
+	public Event searchEventByName(String name) {
+		return db.searchEventByName(name);
+	}
+	
 	public ArrayList<Event> searcAllEvent() {
 		return db.searcAllEvent();
 	}
@@ -108,7 +112,16 @@ public class DbController {
 		return db.searchParticipantById(id);
 	}
 	
+	public ArrayList<Participant> searchParticipantByEventId(int id) {
+		return db.searchParticipantByEventId(id);
+	}
+	
+	public ArrayList<Participant> searchParticipantByCustId(int id) {
+		return db.searchParticipantByCustId(id);
+	}
+	
 	public void deleteParticipant(Participant participant) {
 		db.deleteParticipant(participant);
 	}
+	
 }

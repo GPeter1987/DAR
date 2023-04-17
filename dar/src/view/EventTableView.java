@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,7 +48,7 @@ public class EventTableView extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = table.getSelectedRow();
 				if(selectedRow != -1) {
-					// ToDo Itt kell meghívni a módosíó képernyőt és elvégezni a módosítást.
+					// TODO Itt kell meghívni a módosíó képernyőt és elvégezni a módosítást.
 					
  				}
 				
@@ -55,8 +56,11 @@ public class EventTableView extends JPanel{
 		});
         
         JScrollPane scrollPane = new JScrollPane(table);
-        add(scrollPane);
-        add(modBtn);
+        setLayout(new BorderLayout());
+        add(scrollPane, BorderLayout.CENTER);
+        add(modBtn, BorderLayout.WEST);
+        //TODO
+        add(new EventPartTableView(1), BorderLayout.SOUTH);
 	}
 	
 	
