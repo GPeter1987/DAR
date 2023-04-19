@@ -52,6 +52,10 @@ public class DbController {
 		return db.searchCustomerById(id);
 	}
 	
+	public ArrayList<Customer> searchAllDojo() {
+		return db.searchAllDojo();
+	}
+	
 	public ArrayList<Customer> searcAllCustomer() {
 		return db.searcAllCustomer();
 	}

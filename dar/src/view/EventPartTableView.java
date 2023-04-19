@@ -13,11 +13,13 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
 import controller.DbController;
+import controller.TableController;
 import model.Customer;
 import model.Participant;
 
 public class EventPartTableView extends JPanel{
 	private DbController dBc = new DbController();
+	private TableController tC = new TableController();
 	private JTable table;
 	private JButton addBtn;
 	private JButton removeBtn;
@@ -31,22 +33,7 @@ public class EventPartTableView extends JPanel{
 			customers.add(cust);
 		}
 		
-		String[] colNames = {"Név", "Fokozat", "Dojo", "Email cím"};
-		Object[][] data = new Object[customers.size()][4];
-		for(int i = 0; i < customers.size(); i ++) {
-			data[i][0] = customers.get(i).getName();
-			data[i][1] = customers.get(i).getRank();
-			
-			if(customers.get(i).getDojoId() > 0 ) {
-				data[i][2] = dBc.searchCustomerById(customers.get(i).getDojoId()).getName();
-			} else {
-				data[i][2] = customers.get(i).getName();
-			}
-			
-			data[i][3] = customers.get(i).getEmail();
-		}
-		
-		table = new JTable(data, colNames);
+		table = tC.createEventPartTable(customers);
 		table.setPreferredScrollableViewportSize(new Dimension(500, 70));
         table.setFillsViewportHeight(true);
         

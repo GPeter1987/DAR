@@ -8,23 +8,16 @@ public class Event {
 	private EventType type;
 	private LocalDate date;
 	private int dojoId;
-	
-	public Event(int id,
-				 String name,
-				 EventType type,
-				 LocalDate date,
-				 int dojoId) {
+
+	public Event(int id, String name, EventType type, LocalDate date, int dojoId) {
 		this.id = id;
 		this.name = name;
 		this.type = type;
 		this.date = date;
 		this.dojoId = dojoId;
 	}
-	
-	public Event(String name,
-			 	 EventType type,
-			 	 LocalDate date,
-			 	 int dojoId) {
+
+	public Event(String name, EventType type, LocalDate date, int dojoId) {
 		this.id = 0; // Adatbázis autoincremetelt értékét tesszük majd ide létrehozásnál.
 		this.name = name;
 		this.type = type;
@@ -71,7 +64,7 @@ public class Event {
 	public void setDojo(int id) {
 		this.dojoId = id;
 	}
-	
+
 	@Override
 	public String toString() {
 		return String.valueOf(id) + ", " + name;

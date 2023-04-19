@@ -3,7 +3,7 @@ package model;
 import java.time.LocalDate;
 
 public class Customer {
-	
+
 	private int id;
 	private String name;
 	private CustomerStatus status;
@@ -13,16 +13,9 @@ public class Customer {
 	private int accountId;
 	private String email;
 	private Boolean passive;
-	
-	public Customer(int id,
-					String name, 
-					CustomerStatus status, 
-					CustomerRank rank, 
-					int dojoId, 
-					LocalDate birthDate, 
-					int accountId,
-					String email,
-					Boolean passive) {
+
+	public Customer(int id, String name, CustomerStatus status, CustomerRank rank, int dojoId, LocalDate birthDate,
+			int accountId, String email, Boolean passive) {
 		this.id = id;
 		this.name = name;
 		this.status = status;
@@ -33,15 +26,9 @@ public class Customer {
 		this.email = email;
 		this.passive = passive;
 	}
-	
-	public Customer(String name, 
-					CustomerStatus status, 
-					CustomerRank rank, 
-					int dojoId, 
-					LocalDate birthDate, 
-					int accountId,
-					String email,
-					Boolean passive) {
+
+	public Customer(String name, CustomerStatus status, CustomerRank rank, int dojoId, LocalDate birthDate,
+			int accountId, String email, Boolean passive) {
 		this.id = 0; // Adatbázis autoincremetelt értékét tesszük majd ide létrehozásnál.
 		this.name = name;
 		this.status = status;
@@ -52,7 +39,7 @@ public class Customer {
 		this.email = email;
 		this.passive = passive;
 	}
-	
+
 	// Dummy for testing
 	public Customer(int id) {
 		this.id = id;
@@ -129,7 +116,7 @@ public class Customer {
 	public void setPassive(Boolean passive) {
 		this.passive = passive;
 	}
-	
+
 	@Override
 	public String toString() {
 		return String.valueOf(id) + ", " + name;
