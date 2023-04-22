@@ -6,15 +6,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import controller.CustomerController;
+import controller.DbController;
+import model.CustomerRank;
+import model.CustomerStatus;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -24,30 +29,34 @@ import javax.swing.JCheckBox;
 public class CreateCustView extends JDialog {
 
 	private CustomerController custCtrl = new CustomerController();
+	private DbController dBc = new DbController();
 	private JComboBox<String> rankCombo = new JComboBox<String>();
+	private JComboBox<String> dojoCombo = new JComboBox<String>();
+	LocalDate birthDate = null;
 
 	public CreateCustView(JFrame frame) {
 		super(frame, "Ügyfél létrehozása", true);
 		setModalityType(ModalityType.APPLICATION_MODAL);
 		setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
 
-		/*
-		 * String name, CustomerStatus status, CustomerRank rank, int dojoId, LocalDate
-		 * birthDate, int accountId, String email, Boolean passive
-		 */
 		// Név
-		JPanel panel = new JPanel(new GridLayout(8, 2));
-		panel.add(new JLabel("Név:"));
-		JTextField nameField = new JTextField();
-		panel.add(nameField);
+		JPanel panel = new JPanel(new GridLayout(8, 1));
+		JPanel namePanel = new JPanel();
+		namePanel.add(new JLabel("Név:"));
+		JTextField nameField = new JTextField(20);
+		namePanel.add(nameField);
+		panel.add(namePanel);
 
 		// Státusz
-		panel.add(new JLabel("Státusz:"));
+		JPanel statusPanel = new JPanel();
+		statusPanel.add(new JLabel("Státusz:"));
 		JComboBox<String> statusCombo = new JComboBox<String>(custCtrl.getStatuses());
-		panel.add(statusCombo);
+		statusPanel.add(statusCombo);
+		panel.add(statusPanel);
 
 		// Rang
-		panel.add(new JLabel("Rang:"));
+		JPanel rankPanel = new JPanel();
+		rankPanel.add(new JLabel("Rang:"));
 		// A Combobox kezdő érték készletét megadjuk
 		if (statusCombo.getSelectedItem().equals("DOJO")) {
 			rankCombo = new JComboBox<String>(new String[] { "NONE" });
@@ -55,42 +64,71 @@ public class CreateCustView extends JDialog {
 			rankCombo = new JComboBox<String>(custCtrl.getRanks());
 		}
 
+		rankPanel.add(rankCombo);
+		panel.add(rankPanel);
+
+		// Dojo
+		JPanel dojoPanel = new JPanel();
+		dojoPanel.add(new JLabel("Dojo:"));
+		// A Combobox kezdő érték készletét megadjuk
+		if (statusCombo.getSelectedItem().equals("DOJO")) {
+			dojoCombo = new JComboBox<String>(new String[] { "NONE" });
+		} else {
+			dojoCombo = new JComboBox<String>(custCtrl.getDojos());
+		}
+
+		dojoPanel.add(dojoCombo);
+		panel.add(dojoPanel);
+
 		// Reagálni kell ,ha státuszban állítanak az érték készlet változzon
 		statusCombo.addItemListener(new ItemListener() {
 
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				String[] arr = null;
+				String[] rankList = null;
+				String[] dojoList = null;
 				if (statusCombo.getSelectedItem().equals("DOJO")) {
-					arr = new String[] { "NONE" };
+					rankList = new String[] { "NONE" };
+					dojoList = new String[] { "NONE" };
 				} else {
-					arr = custCtrl.getRanks();
+					rankList = custCtrl.getRanks();
+					dojoList = custCtrl.getDojos();
 				}
 
-				rankCombo.setModel(new DefaultComboBoxModel<>(arr));
+				rankCombo.setModel(new DefaultComboBoxModel<>(rankList));
+				dojoCombo.setModel(new DefaultComboBoxModel<>(dojoList));
 			}
 		});
 
-		panel.add(rankCombo);
-
-		// Dojo
-		panel.add(new JLabel("Dojo:"));
-		JComboBox<String> dojoCombo = new JComboBox<>(custCtrl.getDojos());
-		panel.add(dojoCombo);
-
 		// Születési dátum
-		panel.add(new JLabel("Születési dátum:"));
-		
-		
+		JPanel birthDatePanel = new JPanel();
+		birthDatePanel.add(new JLabel("Születési dátum:"));
+		JPanel datePicPanel = new JPanel();
+		birthDatePanel.add(datePicPanel);
+		JTextField yearField = new JTextField(4);
+		datePicPanel.add(yearField);
+		datePicPanel.add(new JLabel("."));
+		JTextField monthField = new JTextField(2);
+		datePicPanel.add(monthField);
+		datePicPanel.add(new JLabel("."));
+		JTextField dayField = new JTextField(2);
+		datePicPanel.add(dayField);
+		datePicPanel.add(new JLabel("."));
+		panel.add(birthDatePanel);
+
 		// Email cím
-		panel.add(new JLabel("E-mail cím:"));
-		JTextField emailField = new JTextField();
-		panel.add(emailField);
-		
+		JPanel emailPanel = new JPanel();
+		emailPanel.add(new JLabel("E-mail cím:"));
+		JTextField emailField = new JTextField(20);
+		emailPanel.add(emailField);
+		panel.add(emailPanel);
+
 		// Passzív
-		panel.add(new JLabel("Passzív:"));
+		JPanel passiveCheckPanel = new JPanel();
+		passiveCheckPanel.add(new JLabel("Passzív:"));
 		JCheckBox passive = new JCheckBox();
-		panel.add(passive);
+		passiveCheckPanel.add(passive);
+		panel.add(passiveCheckPanel);
 
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(new ActionListener() {
@@ -98,9 +136,28 @@ public class CreateCustView extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				// Adatok feldolgozása
 				String name = nameField.getText();
-				String description = emailField.getText();
-				// TODO: adatok mentése
-				CreateCustView.this.dispose();
+				CustomerStatus status = CustomerStatus.valueOf(String.valueOf(statusCombo.getSelectedItem()));
+				CustomerRank rank = CustomerRank.valueOf(String.valueOf(rankCombo.getSelectedItem()));
+				String email = emailField.getText();
+				int dojoId = dBc.searchDojoIdByName(String.valueOf(dojoCombo.getSelectedItem()));
+				LocalDate bDate = null;
+				try {
+					bDate = LocalDate.of(Integer.valueOf(yearField.getText()), Integer.valueOf(monthField.getText()),
+							Integer.valueOf(dayField.getText()));
+				} catch (DateTimeException exc) {
+					System.out.println("Rossz születési dátum lett megadva!");
+				}
+
+				boolean pass = passive.isSelected();
+
+				if (bDate != null) {
+					custCtrl.createCustomer(name, status, rank, dojoId, bDate, email, pass);
+					CreateCustView.this.dispose();
+				} else {
+					String errMess = "Hibás születési adatok az űrlapon!";
+					//TODO
+					System.out.println(errMess);
+				}
 			}
 		});
 		JButton cancelButton = new JButton("Cancel");

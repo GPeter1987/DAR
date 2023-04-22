@@ -22,7 +22,7 @@ public class DataBase {
 
 	public void connectDB() throws SQLException {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection(jdbc, userName, password);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -233,6 +233,54 @@ public class DataBase {
 		return customer;
 	}
 
+	public int searchCustIdByName(String name, String email) {
+		String sql = "SELECT * FROM customer WHERE Name = '" + name + "' AND Email = '" + email + "'";
+
+		try {
+			connectDB();
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			Customer customer = null;
+			while (rs.next()) {
+				customer = new Customer(rs.getInt("ID"), rs.getString("Name"),
+						CustomerStatus.valueOf(rs.getString("Status")), CustomerRank.valueOf(rs.getString("Rank")),
+						rs.getInt("DojoID"), rs.getDate("BDate").toLocalDate(), rs.getInt("AccountID"),
+						rs.getString("Email"), rs.getBoolean("Passive"));
+
+			}
+			disconnectDB();
+
+			return customer.getId();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	public int searchDojoIdByName(String name) {
+		String sql = "SELECT * FROM customer WHERE Name = '" + name + "' ";
+
+		try {
+			connectDB();
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			Customer customer = null;
+			while (rs.next()) {
+				customer = new Customer(rs.getInt("ID"), rs.getString("Name"),
+						CustomerStatus.valueOf(rs.getString("Status")), CustomerRank.valueOf(rs.getString("Rank")),
+						rs.getInt("DojoID"), rs.getDate("BDate").toLocalDate(), rs.getInt("AccountID"),
+						rs.getString("Email"), rs.getBoolean("Passive"));
+
+			}
+			disconnectDB();
+
+			return customer.getId();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+
 	public ArrayList<Customer> searchAllDojo() {
 		String sql = "SELECT * FROM customer WHERE Status = 'DOJO'";
 		ArrayList<Customer> customers = new ArrayList<Customer>();
@@ -325,6 +373,27 @@ public class DataBase {
 			System.out.println("Account saved!");
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+	}
+
+	public int searchAccIdByCustId(int custId) {
+		String sql = "SELECT * FROM account WHERE CustomerID = " + String.valueOf(custId);
+
+		try {
+			connectDB();
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+			Account acc = null;
+			while (rs.next()) {
+				acc = new Account(rs.getInt("ID"), rs.getInt("CustomerID"));
+
+			}
+			disconnectDB();
+
+			return acc.getId();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
 		}
 	}
 
