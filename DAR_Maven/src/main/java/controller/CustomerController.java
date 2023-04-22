@@ -52,6 +52,14 @@ public class CustomerController {
 		return dojoNames;
 	}
 
+	public int getDojoIdByStatusText(String status) {
+		int dojoId = 0;
+		if (!status.equals("NONE")) {
+			dojoId = dBc.searchDojoIdByName(status);
+		}
+		return dojoId;
+	}
+
 	public void createCustomer(String name, CustomerStatus status, CustomerRank rank, int dojoId, LocalDate bDate,
 			String email, boolean pass) {
 		// Létre kell hozni egy felhasználót

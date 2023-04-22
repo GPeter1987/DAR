@@ -139,7 +139,7 @@ public class CreateCustView extends JDialog {
 				CustomerStatus status = CustomerStatus.valueOf(String.valueOf(statusCombo.getSelectedItem()));
 				CustomerRank rank = CustomerRank.valueOf(String.valueOf(rankCombo.getSelectedItem()));
 				String email = emailField.getText();
-				int dojoId = dBc.searchDojoIdByName(String.valueOf(dojoCombo.getSelectedItem()));
+				int dojoId = custCtrl.getDojoIdByStatusText(String.valueOf(dojoCombo.getSelectedItem()));
 				LocalDate bDate = null;
 				try {
 					bDate = LocalDate.of(Integer.valueOf(yearField.getText()), Integer.valueOf(monthField.getText()),
@@ -155,7 +155,7 @@ public class CreateCustView extends JDialog {
 					CreateCustView.this.dispose();
 				} else {
 					String errMess = "Hibás születési adatok az űrlapon!";
-					//TODO
+					// TODO
 					System.out.println(errMess);
 				}
 			}
