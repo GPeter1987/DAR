@@ -63,6 +63,14 @@ public class DbController {
 	public ArrayList<Customer> searchAllDojo() {
 		return db.searchAllDojo();
 	}
+	
+	public ArrayList<Integer> searchAllDojoLike(String namePart) { 
+		return db.searchAllDojoLike(namePart);
+	}
+	
+	public ArrayList<Customer> searchAllCustomerLike(Customer cus ) {
+		return db.searchAllCustomerLike(cus);
+	}
 
 	public ArrayList<Customer> searcAllCustomer() {
 		return db.searcAllCustomer();

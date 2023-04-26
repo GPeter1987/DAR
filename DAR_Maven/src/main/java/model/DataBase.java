@@ -256,7 +256,7 @@ public class DataBase {
 			return 0;
 		}
 	}
-	
+
 	public int searchDojoIdByName(String name) {
 		String sql = "SELECT * FROM customer WHERE Name = '" + name + "' ";
 
@@ -284,6 +284,76 @@ public class DataBase {
 	public ArrayList<Customer> searchAllDojo() {
 		String sql = "SELECT * FROM customer WHERE Status = 'DOJO'";
 		ArrayList<Customer> customers = new ArrayList<Customer>();
+
+		try {
+			connectDB();
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+
+			while (rs.next()) {
+				Customer customer = new Customer(rs.getInt("ID"), rs.getString("Name"),
+						CustomerStatus.valueOf(rs.getString("Status")), CustomerRank.valueOf(rs.getString("Rank")),
+						rs.getInt("DojoID"), rs.getDate("BDate").toLocalDate(), rs.getInt("AccountID"),
+						rs.getString("Email"), rs.getBoolean("Passive"));
+				customers.add(customer);
+			}
+			disconnectDB();
+
+			return customers;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public ArrayList<Integer> searchAllDojoLike(String namePart) {
+		String sql = "SELECT * FROM customer WHERE Status = 'DOJO' AND Name LIKE '%" + namePart + "%'";
+		ArrayList<Customer> customers = new ArrayList<Customer>();
+
+		try {
+			connectDB();
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(sql);
+
+			while (rs.next()) {
+				Customer customer = new Customer(rs.getInt("ID"), rs.getString("Name"),
+						CustomerStatus.valueOf(rs.getString("Status")), CustomerRank.valueOf(rs.getString("Rank")),
+						rs.getInt("DojoID"), rs.getDate("BDate").toLocalDate(), rs.getInt("AccountID"),
+						rs.getString("Email"), rs.getBoolean("Passive"));
+				customers.add(customer);
+			}
+			disconnectDB();
+
+			ArrayList<Integer> dojoIds = new ArrayList<Integer>();
+			for (Customer cus : customers) {
+				dojoIds.add(cus.getId());
+			}
+
+			return dojoIds;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public ArrayList<Customer> searchAllCustomerLike(Customer cus) {
+		ArrayList<Customer> customers = new ArrayList<Customer>();
+
+		String cusId = cus.getId() != 0 ? "ID LIKE '%" + cus.getId() + "%' " : "";
+		String cusName = cus.getName().equals("") ? "" : "AND Name LIKE '%" + cus.getName() + "%' ";
+		String cusStatus = String.valueOf(cus.getStatus()).equals("") ? ""
+				: "AND Status LIKE '%" + String.valueOf(cus.getStatus()) + "%' ";
+		String cusRank = String.valueOf(cus.getRank()).equals("") ? ""
+				: "AND Rank LIKE '%" + String.valueOf(cus.getRank()) + "%' ";
+		String dojoId = cus.getDojoId() == 0 ? "" : "AND DojoID LIKE '%" + cus.getDojoId() + "%' ";
+		String bDate = cus.getBirthDate() == null ? ""
+				: "AND BDate LIKE '%" + String.valueOf(cus.getBirthDate()) + "%' ";
+		String accId = cus.getAccountId() == 0 ? "" : "AND AccountID LIKE '%" + cus.getAccountId() + "%' ";
+		String cusEmail = cus.getEmail().equals("") ? "" : "AND Email LIKE '%" + cus.getEmail() + "%' ";
+		String cusPassive = cus.getPassive() ? "" : "AND Passve LIKE '%" + cus.getDojoId() + "%' ";
+
+		String sql = "SELECT * FROM customer WHERE " + cusId + cusName + cusStatus + cusRank + dojoId + bDate + accId
+				+ cusEmail + cusPassive;
 
 		try {
 			connectDB();

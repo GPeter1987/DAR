@@ -2,6 +2,7 @@ package controller;
 
 import model.CustomerStatus;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -59,6 +60,18 @@ public class CustomerController {
 		}
 		return dojoId;
 	}
+	
+	public LocalDate validateBDate(String year, String month, String day) {
+		LocalDate bDate = null;
+		try {
+			bDate = LocalDate.of(Integer.valueOf(year), Integer.valueOf(month),
+					Integer.valueOf(day));
+			return bDate;
+		} catch (DateTimeException exc) {
+			System.out.println("Rossz születési dátum lett megadva!");
+			return null;
+		}
+	}
 
 	public void createCustomer(String name, CustomerStatus status, CustomerRank rank, int dojoId, LocalDate bDate,
 			String email, boolean pass) {
@@ -74,4 +87,15 @@ public class CustomerController {
 		cust = new Customer(custId, name, status, rank, dojoId, bDate, accId, email, pass);
 		dBc.modifyCustomer(cust);
 	}
+	
+	// Az ügyfél keresése keresőképernyőn megadott értékek alapján
+	public ArrayList<Customer> searchCustomer(Customer sample) {
+		ArrayList<Customer> custList = dBc.searchAllCustomerLike(sample);
+		
+		
+		
+		
+		return custList;
+	}
+	
 }

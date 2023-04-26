@@ -78,7 +78,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		if (command.equals("Új ügyfél...")) {
 			new CreateCustView(this);
 		} else if (command.equals("Ügyfél módosítása...")) {
-			// TODO
+			new CustomerSearchView();
 		} else if (command.equals("Ügyfél lista...")) {
 			// TODO
 		} else if (command.equals("Számlák megtekintése...")) {

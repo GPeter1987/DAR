@@ -6,13 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.time.DateTimeException;
 import java.time.LocalDate;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -140,13 +138,7 @@ public class CreateCustView extends JDialog {
 				CustomerRank rank = CustomerRank.valueOf(String.valueOf(rankCombo.getSelectedItem()));
 				String email = emailField.getText();
 				int dojoId = custCtrl.getDojoIdByStatusText(String.valueOf(dojoCombo.getSelectedItem()));
-				LocalDate bDate = null;
-				try {
-					bDate = LocalDate.of(Integer.valueOf(yearField.getText()), Integer.valueOf(monthField.getText()),
-							Integer.valueOf(dayField.getText()));
-				} catch (DateTimeException exc) {
-					System.out.println("Rossz születési dátum lett megadva!");
-				}
+				LocalDate bDate = custCtrl.validateBDate(yearField.getText(), monthField.getText(), dayField.getText());
 
 				boolean pass = passive.isSelected();
 
